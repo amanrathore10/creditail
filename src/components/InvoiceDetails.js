@@ -1,18 +1,33 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { UserContext } from './Context/User';
 
-function InvoiceDetails({navigation}) {
-    const [amount,setAmount] = useState("");
+function InvoiceDetails({route,navigation}) {
+    const [amount,setAmount] = useState("₹");
     const [paymentMode,setPaymentMode] = useState("");
+    const {data,updateInvoice} = useContext(UserContext)
+    const invoice_id = route.params.invoice_id;
+    const invoiceDetails = data.find((val)=>(val.id === invoice_id))
     const handleInput = (text)=>{
         console.log(text);
-        if(parseInt(text)|| text === ""){
+        if(parseInt(text.replace("₹",''))|| text !== "₹"){
             setAmount(text)
         }
     }
+    useEffect(()=>{
+        console.log(invoiceDetails);
+        if(invoiceDetails.payment_status === "success"){
+            navigation.navigate('Success',{
+                invoice_id: invoiceDetails.id
+            })
+        }
+    },[invoiceDetails])
+    
     const redirectToSuccess = ()=>{
+        console.log('___aa',{...invoiceDetails,payment_mode:paymentMode,payment_status:"success"})
+        updateInvoice({...invoiceDetails,payment_mode:paymentMode,payment_status:"success"})
         navigation.navigate('Success',{
-            invoice_id: 123
+            invoice_id: invoiceDetails.id
         })
     }
     const selectPaymentMode = (mode)=>{

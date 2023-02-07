@@ -1,7 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Image, Text, View } from 'react-native'
+import { UserContext } from './Context/User'
 const success_image = require('../../assets/success_icon.png')
-function Success({navigation}) {
+function Success({route,navigation}) {
+    const {data} = useContext(UserContext)
+
+    const invoice_id = route.params.invoice_id;
+    const invoiceDetails = data.find((val)=>(val.id === invoice_id))
+    console.log('__final_success',invoiceDetails)
     useEffect(()=>{
         setTimeout(()=>{
             navigation.navigate('Home')
@@ -13,15 +19,15 @@ function Success({navigation}) {
     >
             <View style={{width:"100%",alignItems:"center",justifyContent:"center",flex:1}}>
                 <Image style={{width:100,height:100}} source={success_image}/>
-            <Text style={{fontSize:12,color:"#ffffff"}}>12312312</Text>
+            <Text style={{fontSize:12,color:"#ffffff"}}>{invoiceDetails.id}</Text>
 
-            <Text style={{fontSize:30,color:"#ffffff",padding:10}}>₹500</Text>
+            <Text style={{fontSize:30,color:"#ffffff",padding:10}}>₹{invoiceDetails.amount}</Text>
 
-            <Text style={{fontSize:16,color:"#ffffff",padding:10}}>Agrawal brothers and sons</Text>
+            <Text style={{fontSize:16,color:"#ffffff",padding:10}}>{invoiceDetails.retailer_name}</Text>
 
-                <Text style={{fontSize:24,color:"#ffffff",letterSpacing:1,borderTopColor:"#ffffff",borderTopWidth: 1,borderStyle:"dashed",padding:20,borderRadius: 1}}>PAID BY CASH</Text>
+                <Text style={{fontSize:24,color:"#ffffff",letterSpacing:1,borderTopColor:"#ffffff",borderTopWidth: 1,borderStyle:"dashed",padding:20,borderRadius: 1}}>PAID BY {invoiceDetails.payment_mode}</Text>
             </View>
-            <Text style={{textAlign:"center",fontSize:12,color:"#ffffff",letterSpacing:1,borderTopColor:"#ffffff",borderTopStyle:"dashed",padding:10}}>Redirecting to Home...</Text>
+            <Text style={{textAlign:"center",fontSize:12,color:"#ffffff",letterSpacing:1,borderTopColor:"#ffffff",borderTopStyle:"dashed",padding:10}}>Redirecting to home screen...</Text>
 
     </View>
   )
